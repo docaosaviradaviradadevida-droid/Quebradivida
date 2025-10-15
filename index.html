@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>QuebraDívida – Devolva 70 % em 72 h</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--red:#e60000;--orange:#ff5a00;--black:#111;--grey:#f5f5f5}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;font-size:18px;color:var(--black);background:var(--grey)}
+header{background:var(--red);color:#fff;text-align:center;padding:20px 10px}
+header h1{margin:0;font-size:32px}
+header p{margin:5px 0 0;font-size:16px;opacity:.9}
+.count-wrapper{display:flex;justify-content:center;gap:20px;margin:15px 0}
+.count-box{background:#fff;border-radius:6px;padding:8px 12px;font-weight:700;font-size:20px;color:var(--red);min-width:40px;text-align:center}
+main{max-width:680px;margin:-20px auto 0;background:#fff;border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.12);padding:25px}
+h2{margin-top:0;font-size:26px}
+ul{list-style:none;padding:0}
+li{margin:10px 0;padding-left:28px;position:relative}
+li::before{content:"✅";position:absolute;left:0;top:0;font-size:20px}
+.pop{position:fixed;bottom:20px;right:20px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:14px 18px;font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,.15);z-index:999;max-width:260px;opacity:0;transform:translateY(20px);transition:all .35s}
+.pop.show{opacity:1;transform:translateY(0)}
+.pop b{color:var(--red)}
+#price-seal{background:var(--orange);color:#fff;display:inline-block;padding:4px 10px;border-radius:4px;font-weight:700;margin-left:6px}
+.cta{width:100%;background:var(--orange);color:#fff;border:none;padding:22px;font-size:22px;font-weight:700;border-radius:6px;cursor:pointer;transition:background .25s}
+.cta:hover{background:#e64a00}
+.timer{font-size:20px;font-weight:700;color:var(--red);margin:15px 0}
+.garantee{background:#d4f8d4;border-left:4px solid green;padding:12px;margin:20px 0;font-size:15px}
+@media(max-width:480px){header h1{font-size:26px}.cta{font-size:20px;padding:18px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DEVOLVA ATÉ <b>70 % DA SUA DÍVIDA</b> EM 72 HORAS</h1>
+  <p><span id="online">17</span> pessoas limpando agora</p>
+  <div class="count-wrapper">
+    <div class="count-box"><span id="min">14</span> min</div>
+    <div class="count-box"><span id="seg">59</span> s</div>
+  </div>
+</header>
+
+<main>
+  <h2>Script exato que bancos aceitam na hora</h2>
+  <ul>
+    <li>Planilha calcula desconto real antes de ligar</li>
+    <li>Áudios prontos para enviar no WhatsApp</li>
+    <li>Bônus: aumente o limite do cartão para quitar tudo</li>
+  </ul>
+
+  <div class="timer">Preço sobe em <span id="countdown">14:59</span></div>
+
+  <button id="btn" class="cta">QUERO LIMPAR MEU NOME AGORA</button>
+
+  <div class="garantee">
+    ⚖️ Garantia 2×: não limpar pelo menos 50 %? Receba <b>2×</b> o valor pago de volta.
+  </div>
+
+  <p style="text-align:center;font-size:14px;color:#555">
+    Pagamento 100 % seguro via Stripe • Acesso imediato
+  </p>
+</main>
+
+<div class="pop" id="pop"></div>
+
+<script>
+/* ---------- PROVA SOCIAL POP-UP ---------- */
+const nomes=['Maria','João','Ana','Carlos','Patrícia','Lucas','Julia','Ricardo','Amanda','Bruno'];
+const pop=document.getElementById('pop');
+let cnt=0;
+function mostraPop(){
+  const valor=(Math.floor(Math.random()*6+2)*1000);
+  pop.innerHTML=`<b>${nomes[cnt%10]}</b> acabou de limpar <b>R$ ${valor.toLocaleString('pt-BR')}</b>`;
+  cnt++;
+  pop.classList.add('show');
+  setTimeout(()=>pop.classList.remove('show'),4500);
+}
+setInterval(mostraPop,7000);
+mostraPop();
+
+/* ---------- TIMER INDIVIDUAL 15:00 ---------- */
+let total=15*60;
+if(localStorage.tt&&Date.now()-localStorage.ts<total*1000){
+  total=Math.floor((localStorage.ts*1+total*1000-Date.now())/1000);
+}
+const countdown=()=>{
+  const m=String(Math.floor(total/60)).padStart(2,0);
+  const s=String(total%60).padStart(2,0);
+  document.getElementById('min').textContent=m;
+  document.getElementById('seg').textContent=s;
+  document.getElementById('countdown').textContent=`${m}:${s}`;
+  if(total>0){total--;localStorage.tt=total;localStorage.ts=Date.now();}
+  else{clearInterval(tick);document.getElementById('btn').disabled=true;document.getElementById('btn').textContent='PREÇO EXPIROU';}
+};
+const tick=setInterval(countdown,1000);
+countdown();
+
+/* ---------- ONLINE COUNTER ---------- */
+let on=Math.floor(Math.random()*5+12);
+setInterval(()=>{
+  on+=Math.random()>0.5?1:-1;
+  if(on<10)on=10;if(on>25)on=25;
+  document.getElementById('online').textContent=on;
+},5000);
+
+/* ---------- CLICK TRACK ---------- */
+document.getElementById('btn').onclick=()=>{
+  localStorage.removeItem('tt');localStorage.removeItem('ts');
+  window.open('https://pay.seusistema.com/quebradivida','_self');
+};
+</script>
+</body>
+</html>
